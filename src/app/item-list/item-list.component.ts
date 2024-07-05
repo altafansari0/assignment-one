@@ -15,7 +15,7 @@ export class ItemListComponent {
   public users:User[] =[];
   public errorMessage:string = '';
   public UserDetail!:User;
-  private _currentPage = 1;
+  public _currentPage = 1;
   private _displayPageData = 3;
   public paginateUserData:User[] = [];
   public prevDisable!:boolean;
@@ -29,7 +29,7 @@ export class ItemListComponent {
       next: (res)=> {
         this.users = res
         this.updatePaginationData()
-        this.onSetPage(1)
+        this.onSetPageNumber(1)
       },
       error: () => this.errorMessage = 'Someting went wrong'
     });
@@ -41,14 +41,13 @@ export class ItemListComponent {
   }
 
   public onNextPaginate() {
-    let pageNum = this._currentPage +1;
-    this.onSetPage(pageNum);
+    let pageNum = this._currentPage + 1;
+    this.onSetPageNumber(pageNum);
   }
 
   public onPreviousPaginate() {
     let pageNum = this._currentPage - 1;
-    console.log(this.prevDisable);
-    this.onSetPage(pageNum);
+    this.onSetPageNumber(pageNum);
   }
 
   public totalPages():number {
@@ -56,11 +55,12 @@ export class ItemListComponent {
   }
 
   private updatePaginationData() {
-    let setPage = (this._currentPage - 1) * this._displayPageData;
-    this.paginateUserData =  this.users.slice(setPage, setPage + this._displayPageData);
+    const startIndex = (this._currentPage - 1) * this._displayPageData;
+    const endIndex = startIndex + this._displayPageData;
+    this.paginateUserData =  this.users.slice(startIndex, endIndex);
   }
 
-  private onSetPage(pageNum:number) {
+  private onSetPageNumber(pageNum:number) {
     if(pageNum < 1 || pageNum > this.totalPages()){
       return
     }
